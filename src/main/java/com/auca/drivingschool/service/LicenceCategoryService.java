@@ -45,4 +45,7 @@ public class LicenceCategoryService {
         licenceCategoryRepository.deleteById(id);
         return "Licence category deleted successfully";
     }
+     public List<LicenceCategory> getUnusedLicenceCategories() {
+        return licenceCategoryRepository.findUnusedLicenceCategories();
+     }
 }

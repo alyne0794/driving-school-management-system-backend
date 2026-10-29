@@ -28,6 +28,11 @@ public class VehicleController {
         return new ResponseEntity<>(vehicleService.getAllVehicles(), HttpStatus.OK);
     }
 
+    @GetMapping("/free")
+    public ResponseEntity<List<Vehicle>> getFree() {
+        return new ResponseEntity<>(vehicleService.getFreeVehicles(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable UUID id) {
         Optional<Vehicle> vehicle = vehicleService.getVehicleById(id);

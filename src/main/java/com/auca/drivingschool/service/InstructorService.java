@@ -52,4 +52,8 @@ public class InstructorService {
         instructorRepository.deleteById(id);
         return "Instructor deleted successfully";
     }
+
+    public List<Instructor> getInstructorsByLicenceCategory(String name) {
+        return instructorRepository.findByLicenceCategoryName(name);
+    }
 }

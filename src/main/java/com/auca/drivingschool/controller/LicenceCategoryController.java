@@ -28,6 +28,11 @@ public class LicenceCategoryController {
         return new ResponseEntity<>(licenceCategoryService.getAllLicenceCategories(), HttpStatus.OK);
     }
 
+    @GetMapping("/unused")
+    public ResponseEntity<List<LicenceCategory>> getUnused() {
+        return new ResponseEntity<>(licenceCategoryService.getUnusedLicenceCategories(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable UUID id) {
         Optional<LicenceCategory> licenceCategory = licenceCategoryService.getLicenceCategoryById(id);

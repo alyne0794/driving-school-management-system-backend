@@ -1,6 +1,7 @@
 package com.auca.drivingschool.service;
 
 import com.auca.drivingschool.model.Learner;
+import com.auca.drivingschool.repository.InstructorRepository;
 import com.auca.drivingschool.repository.LearnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ public class LearnerService {
 
     @Autowired
     private LearnerRepository learnerRepository;
+
+    @Autowired
+    private InstructorRepository instructorRepository;
 
     public String saveLearner(Learner learner) {
         learnerRepository.save(learner);
@@ -49,7 +53,16 @@ public class LearnerService {
         learnerRepository.deleteById(id);
         return "Learner deleted successfully";
     }
-   public List<Learner> getLearnersByLastName(String lastName) {
+
+    public List<Learner> getLearnersByLastName(String lastName) {
         return learnerRepository.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
-    } 
+    }
+
+    public boolean instructorExists(UUID instructorId) {
+        return instructorRepository.existsById(instructorId);
+    }
+
+    public List<Learner> getLearnersOfInstructor(UUID instructorId) {
+        return learnerRepository.findLearnersOfInstructor(instructorId);
+    }
 }

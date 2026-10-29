@@ -22,10 +22,17 @@ public class InstructorController {
         String message = instructorService.saveInstructor(instructor);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
+
     @GetMapping("/all")
     public ResponseEntity<List<Instructor>> getAll() {
         return new ResponseEntity<>(instructorService.getAllInstructors(), HttpStatus.OK);
     }
+
+    @GetMapping("/by-licence-category")
+    public ResponseEntity<List<Instructor>> getByLicenceCategory(@RequestParam String name) {
+        return new ResponseEntity<>(instructorService.getInstructorsByLicenceCategory(name), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable UUID id) {
         Optional<Instructor> instructor = instructorService.getInstructorById(id);
@@ -35,6 +42,7 @@ public class InstructorController {
             return new ResponseEntity<>("The instructor with that id does not exist", HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<String> update(@PathVariable UUID id, @RequestBody Instructor instructor) {
         String message = instructorService.updateInstructor(id, instructor);
