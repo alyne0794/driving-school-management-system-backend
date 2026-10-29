@@ -10,12 +10,9 @@ public class DrivingLesson {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private LocalDate lessonDate;
-
     @Enumerated(EnumType.STRING)
     private LessonStatus status;
-
     private String lessonType;
     private int durationMinutes;
 
@@ -28,7 +25,6 @@ public class DrivingLesson {
     private Instructor instructor;
 
     public DrivingLesson() {}
-
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
 

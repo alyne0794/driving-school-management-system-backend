@@ -27,6 +27,10 @@ public class LearnerController {
     public ResponseEntity<List<Learner>> getAll() {
         return new ResponseEntity<>(learnerService.getAllLearners(), HttpStatus.OK);
     }
+     @GetMapping("/by-last-name")
+    public ResponseEntity<List<Learner>> getByLastName(@RequestParam String lastName) {
+        return new ResponseEntity<>(learnerService.getLearnersByLastName(lastName), HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable UUID id) {

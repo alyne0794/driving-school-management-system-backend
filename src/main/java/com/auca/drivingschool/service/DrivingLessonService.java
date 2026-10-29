@@ -1,9 +1,11 @@
 package com.auca.drivingschool.service;
 
 import com.auca.drivingschool.model.DrivingLesson;
+import com.auca.drivingschool.model.LessonStatus;
 import com.auca.drivingschool.repository.DrivingLessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,5 +51,13 @@ public class DrivingLessonService {
         }
         drivingLessonRepository.deleteById(id);
         return "Driving lesson deleted successfully";
+    }
+
+    public List<DrivingLesson> getDrivingLessonsByStatus(LessonStatus status) {
+        return drivingLessonRepository.findByStatusOrderByLessonDateAsc(status);
+    }
+
+    public List<DrivingLesson> getDrivingLessonsBetween(LocalDate start, LocalDate end) {
+        return drivingLessonRepository.findByLessonDateBetweenOrderByLessonDateAsc(start, end);
     }
 }

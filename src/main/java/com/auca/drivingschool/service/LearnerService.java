@@ -49,4 +49,7 @@ public class LearnerService {
         learnerRepository.deleteById(id);
         return "Learner deleted successfully";
     }
+   public List<Learner> getLearnersByLastName(String lastName) {
+        return learnerRepository.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+    } 
 }
