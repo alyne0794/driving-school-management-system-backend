@@ -22,9 +22,14 @@ public class DrivingLessonController {
     @PostMapping("/save")
     public ResponseEntity<String> save(@RequestBody DrivingLesson drivingLesson) {
         String message = drivingLessonService.saveDrivingLesson(drivingLesson);
+         if (message.equals("Driving lesson saved successfully")) {
         return new ResponseEntity<>(message, HttpStatus.CREATED);
+    } else if (message.equals("Driving lesson date cannot be in the past")) {
+      return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);  
+    }else{
+        return new ResponseEntity<>(message,HttpStatus.CONFLICT);
     }
-
+    }
     @GetMapping("/all")
     public ResponseEntity<List<DrivingLesson>> getAll() {
         return new ResponseEntity<>(drivingLessonService.getAllDrivingLessons(), HttpStatus.OK);
@@ -61,7 +66,18 @@ public class DrivingLessonController {
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
     }
-
+  @PatchMapping("/{id}/status")
+    public ResponseEntity<String> updateStatus(@PathVariable UUID id, @RequestParam LessonStatus status) {
+        String message = drivingLessonService.updateStatus(id, status);
+        if (message.equals("Driving lesson status updated successfully")) {
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else if (message.startsWith("Cannot change status")) {
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
+    }
+    
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id) {
         String message = drivingLessonService.deleteDrivingLesson(id);

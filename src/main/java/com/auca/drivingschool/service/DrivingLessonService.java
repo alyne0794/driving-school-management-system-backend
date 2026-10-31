@@ -17,6 +17,17 @@ public class DrivingLessonService {
     private DrivingLessonRepository drivingLessonRepository;
 
     public String saveDrivingLesson(DrivingLesson drivingLesson) {
+        if (drivingLesson.getLessonDate() != null && drivingLesson.getLessonDate().isBefore(LocalDate.now())) {
+            return "Driving lesson date cannot be in the past";
+        }
+        if (drivingLesson.getInstructor() != null
+                && drivingLessonRepository.existsByInstructorIdAndLessonDateAndStatusNot(
+                        drivingLesson.getInstructor().getId(),
+                        drivingLesson.getLessonDate(),
+                        LessonStatus.CANCELLED)) {
+            return "Instructor is already booked on that date";
+        }
+        drivingLesson.setStatus(LessonStatus.BOOKED);
         drivingLessonRepository.save(drivingLesson);
         return "Driving lesson saved successfully";
     }
@@ -36,13 +47,37 @@ public class DrivingLessonService {
         }
         DrivingLesson lesson = existing.get();
         lesson.setLessonDate(newLesson.getLessonDate());
-        lesson.setStatus(newLesson.getStatus());
         lesson.setLessonType(newLesson.getLessonType());
         lesson.setDurationMinutes(newLesson.getDurationMinutes());
         lesson.setLearner(newLesson.getLearner());
         lesson.setInstructor(newLesson.getInstructor());
         drivingLessonRepository.save(lesson);
         return "Driving lesson updated successfully";
+    }
+
+    public String updateStatus(UUID id, LessonStatus newStatus) {
+        Optional<DrivingLesson> existing = drivingLessonRepository.findById(id);
+        if (existing.isEmpty()) {
+            return "The driving lesson with that id does not exist";
+        }
+        DrivingLesson lesson = existing.get();
+        LessonStatus current = lesson.getStatus();
+
+        boolean allowed = false;
+        if (current == LessonStatus.BOOKED
+                && (newStatus == LessonStatus.ONGOING || newStatus == LessonStatus.CANCELLED)) {
+            allowed = true;
+        } else if (current == LessonStatus.ONGOING
+                && (newStatus == LessonStatus.FINISHED || newStatus == LessonStatus.CANCELLED)) {
+            allowed = true;
+        }
+
+        if (!allowed) {
+            return "Cannot change status from " + current + " to " + newStatus;
+        }
+        lesson.setStatus(newStatus);
+        drivingLessonRepository.save(lesson);
+        return "Driving lesson status updated successfully";
     }
 
     public String deleteDrivingLesson(UUID id) {

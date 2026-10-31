@@ -12,4 +12,5 @@ public interface DrivingLessonRepository extends JpaRepository<DrivingLesson, UU
     List<DrivingLesson> findByStatusOrderByLessonDateAsc(LessonStatus status);
 
     List<DrivingLesson> findByLessonDateBetweenOrderByLessonDateAsc(LocalDate start, LocalDate end);
+    boolean existsByInstructorIdAndLessonDateAndStatusNot(UUID instructorId, LocalDate lessonDate, LessonStatus status);
 }
