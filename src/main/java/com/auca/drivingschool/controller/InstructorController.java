@@ -22,7 +22,6 @@ public class InstructorController {
         String message = instructorService.saveInstructor(instructor);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
-
     @GetMapping("/all")
     public ResponseEntity<List<Instructor>> getAll() {
         return new ResponseEntity<>(instructorService.getAllInstructors(), HttpStatus.OK);
@@ -42,7 +41,6 @@ public class InstructorController {
             return new ResponseEntity<>("The instructor with that id does not exist", HttpStatus.NOT_FOUND);
         }
     }
-
     @PutMapping("/update/{id}")
     public ResponseEntity<String> update(@PathVariable UUID id, @RequestBody Instructor instructor) {
         String message = instructorService.updateInstructor(id, instructor);
@@ -52,7 +50,30 @@ public class InstructorController {
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
     }
-
+    @PutMapping("/{instructorId}/licence-categories/{licenceCategoryId}")
+    public ResponseEntity<String> addLicenceCategory(@PathVariable UUID instructorId,
+                                                     @PathVariable UUID licenceCategoryId) {
+        String message = instructorService.addLicenceCategory(instructorId, licenceCategoryId);
+        if (message.equals("Licence category added to the instructor")) {
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else if (message.equals("The instructor already has that licence category")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
+    }
+    @PatchMapping("/{instructorId}/vehicle")
+    public ResponseEntity<String> changeVehicle(@PathVariable UUID instructorId,
+                                                @RequestParam int fleetNumber) {
+        String message = instructorService.changeVehicle(instructorId, fleetNumber);
+        if (message.equals("Vehicle changed successfully")) {
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else if (message.equals("That vehicle is taken by another instructor")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id) {
         String message = instructorService.deleteInstructor(id);
