@@ -6,6 +6,7 @@ import com.auca.drivingschool.repository.DrivingLessonRepository;
 import com.auca.drivingschool.repository.LessonReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,7 @@ public class DrivingLessonService {
         drivingLessonRepository.save(lesson);
         return "Driving lesson updated successfully";
     }
+
     public String updateStatus(UUID id, LessonStatus newStatus) {
         Optional<DrivingLesson> existing = drivingLessonRepository.findById(id);
         if (existing.isEmpty()) {
@@ -82,6 +84,7 @@ public class DrivingLessonService {
         drivingLessonRepository.save(lesson);
         return "Driving lesson status updated successfully";
     }
+
     public String deleteDrivingLesson(UUID id) {
         Optional<DrivingLesson> existing = drivingLessonRepository.findById(id);
         if (existing.isEmpty()) {
@@ -93,10 +96,22 @@ public class DrivingLessonService {
         drivingLessonRepository.deleteById(id);
         return "Driving lesson deleted successfully";
     }
+
     public List<DrivingLesson> getDrivingLessonsByStatus(LessonStatus status) {
         return drivingLessonRepository.findByStatusOrderByLessonDateAsc(status);
     }
+
     public List<DrivingLesson> getDrivingLessonsBetween(LocalDate start, LocalDate end) {
         return drivingLessonRepository.findByLessonDateBetweenOrderByLessonDateAsc(start, end);
+    }
+
+    public List<Object[]> getStatsByStatus() {
+        return drivingLessonRepository.countByStatus();
+    }
+
+    @Transactional
+    public String cancelDay(UUID instructorId, LocalDate date) {
+        int count = drivingLessonRepository.cancelDay(instructorId, date);
+        return count + " driving lessons cancelled";
     }
 }
