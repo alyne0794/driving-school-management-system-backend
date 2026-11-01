@@ -3,6 +3,7 @@ package com.auca.drivingschool.service;
 import com.auca.drivingschool.model.DrivingLesson;
 import com.auca.drivingschool.model.LessonStatus;
 import com.auca.drivingschool.repository.DrivingLessonRepository;
+import com.auca.drivingschool.repository.LessonReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -15,6 +16,9 @@ public class DrivingLessonService {
 
     @Autowired
     private DrivingLessonRepository drivingLessonRepository;
+
+    @Autowired
+    private LessonReportRepository lessonReportRepository;
 
     public String saveDrivingLesson(DrivingLesson drivingLesson) {
         if (drivingLesson.getLessonDate() != null && drivingLesson.getLessonDate().isBefore(LocalDate.now())) {
@@ -54,7 +58,6 @@ public class DrivingLessonService {
         drivingLessonRepository.save(lesson);
         return "Driving lesson updated successfully";
     }
-
     public String updateStatus(UUID id, LessonStatus newStatus) {
         Optional<DrivingLesson> existing = drivingLessonRepository.findById(id);
         if (existing.isEmpty()) {
@@ -79,19 +82,20 @@ public class DrivingLessonService {
         drivingLessonRepository.save(lesson);
         return "Driving lesson status updated successfully";
     }
-
     public String deleteDrivingLesson(UUID id) {
-        if (!drivingLessonRepository.existsById(id)) {
+        Optional<DrivingLesson> existing = drivingLessonRepository.findById(id);
+        if (existing.isEmpty()) {
             return "The driving lesson with that id does not exist";
+        }
+        if (lessonReportRepository.existsByDrivingLesson(existing.get())) {
+            return "That driving lesson has lesson reports, delete them first";
         }
         drivingLessonRepository.deleteById(id);
         return "Driving lesson deleted successfully";
     }
-
     public List<DrivingLesson> getDrivingLessonsByStatus(LessonStatus status) {
         return drivingLessonRepository.findByStatusOrderByLessonDateAsc(status);
     }
-
     public List<DrivingLesson> getDrivingLessonsBetween(LocalDate start, LocalDate end) {
         return drivingLessonRepository.findByLessonDateBetweenOrderByLessonDateAsc(start, end);
     }
