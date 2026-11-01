@@ -5,6 +5,8 @@ import com.auca.drivingschool.model.LessonStatus;
 import com.auca.drivingschool.repository.DrivingLessonRepository;
 import com.auca.drivingschool.repository.LessonReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -106,12 +108,16 @@ public class DrivingLessonService {
     }
 
     public List<Object[]> getStatsByStatus() {
-        return drivingLessonRepository.countByStatus();
+        return drivingLessonRepository.countLessonsGroupedByStatus();
     }
 
     @Transactional
     public String cancelDay(UUID instructorId, LocalDate date) {
         int count = drivingLessonRepository.cancelDay(instructorId, date);
         return count + " driving lessons cancelled";
+    }
+
+    public Page<DrivingLesson> getDrivingLessonsPage(Pageable pageable) {
+        return drivingLessonRepository.findAll(pageable);
     }
 }
